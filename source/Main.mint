@@ -23,7 +23,7 @@ component Main {
       <Quote/>
       <RefreshButton/>
 
-      <a::link href="https://github.com/TeddyDD/mint-quote">
+      <a::link href="https://github.com/TeddyDD/mint-quotes">
         <{ "Get code" }>
       </a>
     </div>
