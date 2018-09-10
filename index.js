@@ -2415,7 +2415,7 @@ class $Main extends Component {
     return _createElement("div", {
       className: `main-base`
     }, [_createElement($Quote, {  }), _createElement($RefreshButton, {  }), _createElement("a", {
-      "href": `https://github.com/TeddyDD/mint-quote`,
+      "href": `https://github.com/TeddyDD/mint-quotes`,
       className: `main-link`
     }, [`Get code`])])
   }
