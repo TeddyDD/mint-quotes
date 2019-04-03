@@ -20,11 +20,11 @@ component Main {
 
   fun render : Html {
     <div::base>
-      <Quote/>
+      <Joke/>
       <RefreshButton/>
 
       <a::link href="https://github.com/TeddyDD/mint-quotes">
-        <{ "Get code" }>
+        "Get code"
       </a>
     </div>
   }

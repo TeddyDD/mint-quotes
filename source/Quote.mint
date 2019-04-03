@@ -1,59 +1,64 @@
-record Quote {
-  quote : String,
-  author : String,
-  cat : String
+record Joke {
+  id : String,
+  joke : String,
+  status : Number
 }
 
-store QuoteApi {
-  fun url : String {
-    "https://talaikis.com/api/quotes/random/"
+store JokeApi {
+  get url : String {
+    "https://icanhazdadjoke.com/"
   }
 
-  state quote : Quote = {
-    quote = "Hello World",
-    author = "Every programmer ever",
-    cat = ""
+  get agent : String {
+    "Mint Qutoes example (https://github.com/TeddyDD/mint-jokes)"
   }
 
-  state status : Quote.Status = Quote.Status::Initial
+  state joke : Joke = {
+    id = "",
+    joke = "I'm not even sorry",
+    status = 0
+  }
 
-  fun nextQuote : Promise(Never, Void) {
+  state status : Joke.Status = Joke.Status::Initial
+
+  fun nextJoke : Promise(Never, Void) {
     sequence {
-      next { status = Quote.Status::Loading }
+      next { status = Joke.Status::Loading }
 
       response =
-        Http.get(url())
+        Http.get(url)
+        |> Http.header("Accept", "application/json")
         |> Http.send()
 
       body =
         Json.parse(response.body)
         |> Maybe.toResult("Json Parse Error")
 
-      newquote =
-        decode body as Quote
+      newjoke =
+        decode body as Joke
 
       next
         {
-          quote = newquote,
-          status = Quote.Status::Ok
+          joke = newjoke,
+          status = Joke.Status::Ok
         }
     } catch {
-      next { status = Quote.Status::Error }
+      next { status = Joke.Status::Error }
     } finally {
       void
     }
   }
 }
 
-enum Quote.Status {
+enum Joke.Status {
   Initial
   Ok
   Loading
   Error
 }
 
-component Quote {
-  connect QuoteApi exposing { quote }
+component Joke {
+  connect JokeApi exposing { joke }
 
   style base {
     font-size: 25pt;
@@ -69,25 +74,25 @@ component Quote {
   fun render : Html {
     <div::base>
       <p>
-        <{ quote.quote }>
+        <{ joke.joke }>
       </p>
 
       <p::author>
-        <{ "~ " + quote.author }>
+        <{ "id: " + joke.id }>
       </p>
     </div>
   }
 }
 
 component RefreshButton {
-  connect QuoteApi exposing { nextQuote, status }
+  connect JokeApi exposing { nextJoke, status }
 
   get text : String {
     case (status) {
-      Quote.Status::Initial => "Get Quote"
-      Quote.Status::Loading => "Loading"
-      Quote.Status::Error => "Try Again"
-      => "Next Quote"
+      Joke.Status::Initial => "Get Joke"
+      Joke.Status::Loading => "Loading"
+      Joke.Status::Error => "Try Again"
+      => "Next Joke"
     }
   }
 
@@ -105,7 +110,7 @@ component RefreshButton {
   }
 
   fun render : Html {
-    <a::base onClick={(event : Html.Event) : Promise(Never, Void) => { nextQuote() }}>
+    <a::base onClick={(event : Html.Event) : Promise(Never, Void) { nextJoke() }}>
       <{ text }>
     </a>
   }
