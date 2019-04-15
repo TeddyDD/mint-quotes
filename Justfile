@@ -1,5 +1,5 @@
 format:
-	mint format source/*.mint
+    find . -type f -name '*.mint' -exec mint format {} \;
 
 deploy:
     mint build
